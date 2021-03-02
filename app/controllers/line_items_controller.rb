@@ -1,7 +1,11 @@
 class LineItemsController < ApplicationController
   include CurrentCart
   before_action :set_cart, only: [:create]
-  before_action :set_line_item, only: %i[ show edit update destroy ]
+  before_action :set_line_item, only: [:show, :edit, :update, :destroy]
+
+  def line_tem_params
+    params.require(:line_item).permit(:product_id)
+  end
 
   # GET /line_items or /line_items.json
   def index
@@ -67,6 +71,6 @@ class LineItemsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def line_item_params
-      params.require(:line_item).permit(:product_id, :cart_id)
+      params.require(:line_item).permit(:product_id)
     end
 end
