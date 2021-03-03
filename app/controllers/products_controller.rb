@@ -3,7 +3,7 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
-    @products = Products.all.order(:title)
+    @products = Product.all.order(:title)
   end
 
   # GET /products/1 or /products/1.json
@@ -41,7 +41,7 @@ class ProductsController < ApplicationController
         format.html { redirect_to @product, notice: "Product was successfully updated." }
         format.json { render :show, status: :ok, location: @product }
 
-        @products = Products.all.order(:title)
+        @products = Product.all.order(:title)
         ActionCable.server.broadcast 'products', html: render_to_string('store/index', layout: false)
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -56,6 +56,17 @@ class ProductsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to products_url, notice: "Product was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def who_bought
+    @product = Product.find(params[:id])
+    @lastest_order = @product.orders.order(:updated_at).last
+
+    if stale?(@last_order)
+      respond_to do |format|
+        format.atom
+      end
     end
   end
 
