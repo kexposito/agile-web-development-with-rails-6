@@ -7,7 +7,7 @@ class OrderMailer < ApplicationMailer
   #
   def received(order)
     @order = order
-    puts order.line_items.inspect
+
     mail to: order.email, subject: 'Pragmatic Store Order Confirmation'
   end
 
